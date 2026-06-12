@@ -1,0 +1,22 @@
+current_phase: "4"
+phase_status: active
+health_score: 100.0
+active_agents: 0
+idle_agents: 0
+total_tasks: 0
+active_tasks: 0
+completed_tasks: 0
+debt_weight: 0.0
+debt_registry_ref: .omo/debt/registry.yaml
+debt_metrics:
+  debt_health: 100.0
+  classification_entropy: 0.0
+  state_entropy: 0.0
+  pointer_entropy: 0.0
+  time_entropy: 0.0
+  backlog_pressure: 0.0
+  coupling_load: 0.0
+debt_watchlist_count: 0
+debt_gate_count: 0
+resolved_debt_items: []
+debt_weight_items: {}
