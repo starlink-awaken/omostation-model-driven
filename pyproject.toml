@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "model-driven"
-version = "0.1.0"
+version = "1.0.0"
 description = "Model-Driven Lifecycle Platform — 全生命周期模型驱动平台：MOF扩展 + 7阶段引擎 + 12工具链 + 管理面"
 readme = "README.md"
 requires-python = ">=3.13"
