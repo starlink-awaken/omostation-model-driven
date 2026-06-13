@@ -235,8 +235,49 @@ class GateEngine:
     ) -> tuple[bool, GateExecution | None]:
         """检查是否可以从 from_stage 转换到 to_stage"""
         gate = self.get_gate(from_stage, to_stage)
-        if gate is None:
-            return True, None  # 无门禁，允许通过
+        execution = None
+        if gate is not None:
+            execution = self.check_gate(gate, context)
 
-        execution = self.check_gate(gate, context)
+        # ====== Phase 4 X1-X4 Governance Evaluator Integration ======
+        # This acts as a global mandatory gate for all transitions.
+        # If the score < 1.0, transition is blocked regardless of other checks.
+        if context is not None:
+            entity_data = context.get("entity", context)
+            entity_id = entity_data.get("id", f"transition_{from_stage.value}_{to_stage.value}")
+
+            from model_driven.management.evaluator import GovernanceEvaluator
+
+            evaluator = GovernanceEvaluator()
+            eval_result = evaluator.evaluate_entity(entity_id, entity_data)
+
+            if eval_result["score"] < 1.0:
+                if execution is None:
+                    # Create a dummy execution if there was no gate
+                    from model_driven.mof.m3_extended import Gate
+
+                    dummy_gate = Gate(
+                        id="gate_global_x1_x4",
+                        from_stage=from_stage,
+                        to_stage=to_stage,
+                        name="Global X1-X4 Governance Gate",
+                        checks=[],
+                    )
+                    execution = GateExecution(gate=dummy_gate, executed_at=datetime.now(UTC).isoformat())
+
+                execution.result = GateResult.FAILED
+                execution.check_results.append(
+                    CheckResult(
+                        name="X1-X4 Governance Compliance",
+                        check_type="governance",
+                        passed=False,
+                        message=f"Entity failed X1-X4 compliance checks (Score: {eval_result['score'] * 100:.1f}%)",
+                    )
+                )
+                return False, execution
+        # ==============================================================
+
+        if execution is None:
+            return True, None
+
         return execution.result == GateResult.PASSED, execution
