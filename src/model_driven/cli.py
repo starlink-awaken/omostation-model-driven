@@ -232,6 +232,7 @@ def main():
         print("  tool        工具链")
         print("  mcp         MCP Server")
         print("  trigger     Trigger 管理")
+        print("  evaluate    模型实体验证与评估 (X1-X4)")
         return
 
     cmd = args[0]
@@ -245,6 +246,7 @@ def main():
         "tool": cmd_tool,
         "mcp": cmd_mcp,
         "trigger": cmd_trigger,
+        "evaluate": cmd_evaluate,
     }
 
     if cmd in commands:
@@ -252,6 +254,37 @@ def main():
     else:
         print(f"未知命令: {cmd}")
         print(f"可用命令: {', '.join(commands.keys())}")
+
+
+def cmd_evaluate(args: list[str]) -> None:
+    """X1-X4 评估与验证命令"""
+    from model_driven.management.evaluator import GovernanceEvaluator
+
+    evaluator = GovernanceEvaluator()
+    if not args:
+        print("用法: model-driven evaluate <entity_id>")
+        return
+
+    entity_id = args[0]
+    # For demonstration, we construct a dummy entity based on some properties
+    # In a real scenario, this would load from a registry
+    data = {
+        "id": entity_id,
+        "type": "M2_Entity",
+        "history": ["creation_event"],
+        "updated_at": "now",
+        "value_link": "demo_goal"
+    }
+
+    result = evaluator.evaluate_entity(entity_id, data)
+    print(f"评估完成: {entity_id}")
+    print(f"  X1 (审计): {'✅' if result['x1_audit'] else '❌'}")
+    print(f"  X2 (保鲜): {'✅' if result['x2_freshness'] else '❌'}")
+    print(f"  X3 (价值): {'✅' if result['x3_value'] else '❌'}")
+    print(f"  X4 (一致): {'✅' if result['x4_consistency'] else '❌'}")
+    print(f"  总分: {result['score']*100:.1f}%")
+
+    print("\n审计日志和可能的 OMO 债务已注册到 .omo 目录。")
 
 
 def cmd_trigger(args: list[str]) -> None:
