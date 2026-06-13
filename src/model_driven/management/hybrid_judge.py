@@ -5,6 +5,9 @@ model_driven.management.hybrid_judge — 混合裁判模型 (Phase 4 Evaluation 
 用于更复杂的生命周期卡点或数据质量评估。
 """
 
+import json
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from typing import Any
 
@@ -19,6 +22,46 @@ class JudgeResult:
     metrics: dict[str, Any]
 
 
+class LLMGatewayProvider:
+    """
+    通过 HTTP 调用 llm-gateway 服务的 Provider
+    默认地址: http://localhost:9290/v1/generate
+    """
+    def __init__(self, endpoint: str = "http://localhost:9290/v1/generate"):
+        self.endpoint = endpoint
+
+    def evaluate(self, text: str, criteria: str) -> dict[str, Any]:
+        prompt = (
+            f"You are an expert semantic evaluator.\n"
+            f"Evaluate the following text based on this criteria: {criteria}\n\n"
+            f"Text: {text}\n\n"
+            f"Output a JSON object with 'passed' (boolean), 'score' (float 0.0 to 1.0), and 'reason' (string)."
+        )
+
+        req = urllib.request.Request( # noqa: S310
+            self.endpoint,
+            data=json.dumps({"prompt": prompt}).encode("utf-8"),
+            headers={"Content-Type": "application/json"}
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=10) as response: # noqa: S310
+                body = response.read().decode("utf-8")
+                res = json.loads(body)
+                content = res.get("content", "{}")
+                # Attempt to parse LLM JSON output (may be wrapped in markdown code blocks)
+                content_clean = content.strip().strip("```json").strip("```").strip()
+                try:
+                    return json.loads(content_clean)
+                except json.JSONDecodeError:
+                    # Fallback parsing
+                    passed = "true" in content_clean.lower()
+                    return {"passed": passed, "score": 1.0 if passed else 0.0, "reason": content_clean}
+        except Exception as e:
+            # Service unavailable or network error
+            return {"error": str(e)}
+
+
 class HybridJudge:
     """
     混合裁判引擎：
@@ -28,7 +71,7 @@ class HybridJudge:
     def __init__(self, llm_provider: Any = None):
         """
         初始化混合裁判引擎
-        :param llm_provider: 注入的 LLM 客户端 (如 DeepEval / Ragas / 自建网关)
+        :param llm_provider: 注入的 LLM 客户端 (如 LLMGatewayProvider / DeepEval / Ragas / 自建网关)
         """
         self.llm_provider = llm_provider
 
@@ -40,8 +83,17 @@ class HybridJudge:
         如果提供了 llm_provider，则调用远端模型；否则使用本地的基础启发式规则。
         """
         if self.llm_provider:
-            # 伪代码：在真实环境中将调用 llm_provider.evaluate(...)
-            pass
+            eval_res = self.llm_provider.evaluate(text, criteria)
+            if "error" not in eval_res:
+                passed = bool(eval_res.get("passed", False))
+                score = float(eval_res.get("score", 0.0))
+                reason = str(eval_res.get("reason", "LLM Evaluation completed"))
+                return JudgeResult(
+                    passed=passed,
+                    score=score,
+                    reason=reason,
+                    metrics={"semantic_score": score, "provider": "llm-gateway"}
+                )
 
         # Fallback 到本地启发式规则
         words = text.split()
