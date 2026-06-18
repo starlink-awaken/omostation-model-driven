@@ -3,7 +3,8 @@
 > **Layer**: M0 横切框架  
 > **Role**: 模型驱动生命周期引擎 — M3→M2→M1 桥接  
 > **Stack**: Python, uv, pytest, ruff; zero internal eCOS deps  
-> **Health**: 190 tests, 100% pass
+> **Health**: See local CI and model validation
+> **SSOT**: 运行时健康、测试通过率、工具链规模以本项目 CI、模型校验和 workspace governance SSOT 为准
 >
 > 系统全景参见：[`docs/ARCHITECTURE-DIAGRAM.md`](../docs/ARCHITECTURE-DIAGRAM.md)
 
