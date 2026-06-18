@@ -21,20 +21,17 @@ def get_workspace_dir() -> Path:
             warnings.warn(f"ECOS_WORKSPACE 指向的路径不存在: {ws}", stacklevel=2)
         return ws
 
-    fallback = Path.home() / "Workspace"
-    warnings.warn(
-        f"ECOS_WORKSPACE 环境变量未设置，使用默认路径: {fallback}。"
-        f"建议设置 export ECOS_WORKSPACE=/path/to/workspace",
-        stacklevel=2,
-    )
-    return fallback
+    # fallback: 相对脚本找 omostation workspace 根 (不硬编码 ~/Workspace, CI 可移植).
+    # _paths.py 在 projects/model-driven/src/model_driven/, parents[4] = omostation 根.
+    return Path(__file__).resolve().parents[4]
 
 
 def get_state_dir() -> Path:
     """获取 model-driven 状态目录。
 
-    返回 <workspace>/.omo/state/model-driven/，并确保目录存在。
+    返回 <workspace>/.omo/state/model-driven/。
+
+    目录创建属于治理写操作，必须由调用方通过 OMO broker / helper 显式完成，
+    这里不再隐式落盘。
     """
-    state_dir = get_workspace_dir() / ".omo" / "state" / "model-driven"
-    state_dir.mkdir(parents=True, exist_ok=True)
-    return state_dir
+    return get_workspace_dir() / ".omo" / "state" / "model-driven"
