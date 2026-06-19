@@ -10,7 +10,7 @@
 
 ### BOS URI
 
-
+model-driven 不直接注册 BOS URI 端点。它作为横切面框架被其他项目通过 Python import 消费，不走 BOS 路由。
 
 ### 入口
 
@@ -18,6 +18,10 @@
 - **MCP stdio**: `src/model_driven/mcp_server.py` 28 tools / 8 managers
 
 ## 2. 上游依赖
+
+| 依赖 | 用途 | 类型 |
+|------|------|------|
+| pyyaml>=6.0 | YAML 解析 (M1/M2/M3 文件) | 运行时 |
 
 
 
