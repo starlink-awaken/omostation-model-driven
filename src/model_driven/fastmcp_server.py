@@ -6,6 +6,7 @@ FastMCP 3.x 不支持 **kwargs，所以用单个通用工具 + JSON 参数。
 from __future__ import annotations
 
 import json as _json
+
 from model_driven.mcp_server import MCPServer
 
 try:

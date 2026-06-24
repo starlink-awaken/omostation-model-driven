@@ -217,6 +217,7 @@ def cmd_mcp(args: list[str]) -> None:
 
 def main():
     """主入口"""
+    print("⚠️ Model-Driven 独立 CLI 已弃用，请使用 cockpit 替代", file=sys.stderr)
     args = sys.argv[1:]
 
     if not args:
