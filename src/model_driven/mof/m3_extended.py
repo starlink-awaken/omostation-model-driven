@@ -19,7 +19,7 @@ from typing import Any
 
 
 class LifecycleStage(Enum):
-    """7 个标准生命周期阶段"""
+    """7 个标准生命周期阶段 (P60+ 第 8 阶段: GOVERNANCE_MAINTENANCE)"""
 
     PLANNING = "planning"  # 规划态
     DESIGN = "design"  # 设计态
@@ -28,6 +28,7 @@ class LifecycleStage(Enum):
     RUNTIME = "runtime"  # 运行态
     OPERATIONS = "operations"  # 运维态
     BUSINESS_OPS = "business_ops"  # 运营态
+    GOVERNANCE_MAINTENANCE = "governance_maintenance"  # P60+ 治理维护态
 
     @classmethod
     def order(cls, stage: LifecycleStage) -> int:
@@ -291,6 +292,25 @@ STANDARD_STAGES: dict[LifecycleStage, Stage] = {
         deliverables=["价值报告", "用户反馈报告", "优化建议"],
         stakeholders=["产品负责人", "业务团队"],
         duration_target_days=30,
+    ),
+    LifecycleStage.GOVERNANCE_MAINTENANCE: Stage(
+        id="STAGE-GOVERNANCE-MAINTENANCE",
+        name="治理维护态",
+        stage=LifecycleStage.GOVERNANCE_MAINTENANCE,
+        order=7,
+        description="持续治理维护: frontmatter 覆盖率 / drift LOW 维度 / 强制闭环纪律。P60 内化 P43-P59 治理方法论。",
+        entry_criteria=["系统进入稳态治理", "governance_score=100 A+"],
+        exit_criteria=["drift_low<=2", "frontmatter>=95%", "commit_closure=健康"],
+        core_activities=[
+            "frontmatter 覆盖率维护 (>=95%)",
+            "mof-drift LOW 维度监控 (<=5)",
+            "mof-version vs git commit 闭环审计",
+            "linter 维度饱和预警 (>=15 用 bin 工具)",
+            "治理就绪度 5 维度评估",
+        ],
+        deliverables=["governance readiness report", "drift LOW count", "commit closure audit"],
+        stakeholders=["governance-team", "治理 Agent"],
+        duration_target_days=0,  # 持续运行
     ),
 }
 
