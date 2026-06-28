@@ -57,7 +57,7 @@ class LLMGatewayProvider:
                     # Fallback parsing
                     passed = "true" in content_clean.lower()
                     return {"passed": passed, "score": 1.0 if passed else 0.0, "reason": content_clean}
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Service unavailable or network error
             return {"error": str(e)}
 

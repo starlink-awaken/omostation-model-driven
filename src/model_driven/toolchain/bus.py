@@ -124,7 +124,7 @@ class ToolchainBus:
                 errors=[str(e)],
                 duration_ms=round(duration, 2),
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             duration = (datetime.now(UTC) - start).total_seconds() * 1000
             tool_result = ToolResult(
                 tool_name=tool_name,

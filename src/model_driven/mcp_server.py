@@ -161,7 +161,7 @@ class MCPServer:
             return tool.handler(**kwargs)
         except (TypeError, ValueError) as e:
             return {"success": False, "error": str(e)}
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             return {"success": False, "error": str(e)}
 
     # ── Handlers ──

@@ -120,7 +120,7 @@ class GateEngine:
                 return CheckResult(name=check_name, check_type=check_type, passed=passed, message=message)
             except (TypeError, ValueError) as e:
                 return CheckResult(name=check_name, check_type=check_type, passed=False, message=str(e))
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 return CheckResult(name=check_name, check_type=check_type, passed=False, message=str(e))
 
         # 2. 内置检查类型

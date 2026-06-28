@@ -171,7 +171,7 @@ class PipelineTracker:
         if self._on_event is not None:
             try:
                 self._on_event(event)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
 
     def start_phase(self, phase: PipelinePhase) -> bool:
