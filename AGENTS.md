@@ -1,66 +1,51 @@
-# AGENTS.md — model-driven Development Guide
+# AGENTS.md — model-driven
 
-> eCOS v5 Cross-Cutting Framework · 全生命周期模型驱动平台
+    > Scope: project-local developer guide for `model-driven`.
+    > Workspace rules live in [`../../AGENTS.md`](../../AGENTS.md); project metadata lives in [`../../docs/project-registry.yaml`](../../docs/project-registry.yaml).
 
-## Quick Commands
+    ## Role
 
-```bash
-cd projects/model-driven
-uv run pytest tests/ -q          # 190 tests, 100% pass
-uv run ruff check src/           # Lint check
-uv run ruff check --fix src/     # Auto-fix
-uv run ruff format src/          # Format
-uv run model-driven --help       # CLI help
-```
+    - Layer: M0
+    - Stack: Python / uv / pytest
+    - Responsibility: 生命周期与 Stage/Gate 横切框架
 
-## Architecture
+    Do not copy volatile facts such as test counts, tool counts, service counts, ports, or current health into this file.
 
-model-driven 是 **Cross-Cutting Framework (横切面框架)**，不归属任何单一层。被 L0/I0/L3/L4 消费，自身零内部依赖。
+    ## Before Editing
 
-### 消费关系
+    1. Read this file and [`CLAUDE.md`](CLAUDE.md) when it exists.
+    2. Check `git status --short` inside this project and at the workspace root.
+    3. Read the specific source or tests you are about to change.
+    4. Prefer project-local commands and targeted tests.
 
-```
-L4 l4-kernel ──→ model-driven (lifecycle, omo_bridge)
-L3 cockpit   ──→ model-driven (MCP tools, CLI bridge)
-I0 agora     ──→ model-driven (28 MCP tools)
-L0 ecos      ──→ model-driven (M1 nodes, 自反验证)
-```
+    ## Commands
 
-### 模块职责
+    ```bash
+    uv sync
+uv run pytest "tests/" -q
+uv run ruff check "src/"
+    ```
 
-| 模块 | 职责 | 文件数 |
-|------|------|:--:|
-| lifecycle/ | 7阶段引擎 + 门禁 + 流水线 + 追踪 | 5 |
-| management/ | Spec/ADR/OKR 管理 + OMO 桥接 + Agent 协作 | 5 |
-| mof/ | M3/M2 元模型扩展 + 本体论 | 3 |
-| toolchain/ | 12工具 + 推导引擎 + Trigger + 扫描/建模/提炼 | 9 |
-| ssot/ | 生命周期/价值 SSOT + 跨阶段检查 | 1 |
-| 入口 | CLI (7子命令) + MCP Server (28 tools) | 2 |
+    ## Key Files
 
-## Key Dependencies
+    - `src/model_driven/mof/m3_extended.py`
+- `src/model_driven/lifecycle/`
+- `src/model_driven/fastmcp_server.py`
 
-- **pyyaml>=6.0** — 唯一外部依赖
-- 零 eCOS 项目依赖
+    ## Gotchas
 
-## Testing Pattern
+    - `生命周期阶段/门禁定义以代码为 SSOT，不在文档复制数量。`
+- `跨仓桥接改动要同步 ecos M1/M2 与验证工具。`
 
-```bash
-cd projects/model-driven
-uv run pytest tests/ -q                    # 全量
-uv run pytest tests/ -k "keyword" -q       # 按关键字
-uv run pytest tests/test_tools.py -q       # 单个文件
-```
+    ## Verification
 
-## File Organization
+    - Documentation-only changes: run `uv run --with "pyyaml" python "../../bin/doc-ssot-lint.py" --json` from this project or from the workspace root.
+    - Code changes: run the narrowest relevant project test first, then broaden if shared contracts changed.
+    - Cross-layer behavior: verify the caller and the callee, not just the touched module.
 
-- `src/model_driven/` — 27 个源文件 (5子包 + 3入口文件)
-- `tests/` — 11 个测试文件, 190 tests
+    ## SSOT Pointers
 
-## Workspace-Wide Governance (2026-06-24)
-
-This project follows the workspace-level governance conventions documented in the root `AGENTS.md`:
-
-- **Agent Mutation Protocol**: Any autonomous agent/cron/daemon that modifies workspace state must emit `agent_mutation_intent`, avoid direct file I/O to `.omo/`/`spaces/`, and commit immediately. See `.omo/standards/agent-mutation-protocol.md` for the full protocol.
-- **SSOT Guardian**: Run `python3 bin/ssot-guardian.py` from the workspace root before committing to detect task-count, current-wave, submodule-pointer, or direct-omo-io drift.
-- **direct-omo-io**: Scripts must route writes to `.omo/` through `omo CLI`, `projects/omo` core, or `projects/c2g` ingress — never via raw `open()/mkdir()/write_text()`.
-- **Submodule Governance**: Commit changes inside the submodule first, then bump the root-repo pointer; `git submodule status` with a `+` prefix indicates pending drift.
+    - Workspace architecture: [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md)
+    - Layer index: [`../../LAYER-INDEX.md`](../../LAYER-INDEX.md)
+    - Project metadata: [`../../docs/project-registry.yaml`](../../docs/project-registry.yaml)
+    - Runtime state: [`../../.omo/state/system.yaml`](../../.omo/state/system.yaml)

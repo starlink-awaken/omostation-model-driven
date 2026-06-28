@@ -1,11 +1,33 @@
-# model-driven — 全生命周期模型驱动平台
+# model-driven
 
-基于 MOF 本体论正交分解 + SSOT 化，对系统全生命周期所有要素建模。
+    > M0 · 生命周期与 Stage/Gate 横切框架
+    > Metadata SSOT: [`../../docs/project-registry.yaml`](../../docs/project-registry.yaml)
 
-## 核心能力
+    ## What It Owns
 
-- **MOF 扩展**: M3 新增生命周期/价值元素 + M2 新增 ~22 类型覆盖 7 阶段
-- **生命周期引擎**: 7 阶段 (规划/设计/开发/部署/运行/运维/运营) + 门禁 + 转换 + 追踪
-- **模型驱动工具链**: 12 个核心工具 (design/generate/derive/validate/connect/compile/evolve/monitor/deploy/observe/report/archive)
-- **管理面**: Spec + ADR + OKR + OMO 桥接 + 多Agent 协作
-- **SSOT 全生命周期化**: 生命周期/价值/过程 SSOT + 跨阶段一致性检查
+    生命周期与 Stage/Gate 横切框架.
+
+    ## Quick Start
+
+    ```bash
+    uv sync
+uv run pytest "tests/" -q
+uv run ruff check "src/"
+    ```
+
+    ## Key Surfaces
+
+    - `src/model_driven/mof/m3_extended.py`
+- `src/model_driven/lifecycle/`
+- `src/model_driven/fastmcp_server.py`
+
+    ## Documentation
+
+    - Developer guide: [`AGENTS.md`](AGENTS.md)
+    - AI context loader: [`CLAUDE.md`](CLAUDE.md) when present
+    - Workspace architecture: [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md)
+    - Layer placement: [`../../LAYER-INDEX.md`](../../LAYER-INDEX.md)
+
+    ## SSOT Rules
+
+    Runtime facts, counts, ports, health, and generated inventories are intentionally not maintained here. Use the workspace registries and project source as the truth.

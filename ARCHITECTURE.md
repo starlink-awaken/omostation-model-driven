@@ -28,7 +28,7 @@ graph TB
 | Type | Entry | Port / Notes |
 |:--|:--|:--|
 | CLI | `model-driven` | status/pipeline/derive/... |
-| MCP stdio | `src/model_driven/mcp_server.py` | 28 tools / 8 managers |
+| MCP stdio | `src/model_driven/mcp_server.py` | MCP tools (以实际为准) / 8 managers |
 
 ## 3. 核心模块
 
