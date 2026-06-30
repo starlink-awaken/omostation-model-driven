@@ -1,6 +1,6 @@
 # Model-Driven 能力地图
 
-> 全生命周期模型驱动平台 · 24 M2类型 · 7阶段 · 12工具
+> 全生命周期模型驱动平台 · M2类型 (见 project-registry.yaml) · 阶段 (见 project-registry.yaml) · 工具 (见 project-registry.yaml)
 
 ---
 
@@ -10,7 +10,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                    Model-Driven — 模型驱动平台                 │
 ├─────────────────────────────────────────────────────────────┤
-│  M2 类型  │  7 阶段  │  12 工具  │  Pipeline  │  Derivation │
+│  M2类型 (见 project-registry.yaml)  │  阶段 (见 project-registry.yaml)  │  工具 (见 project-registry.yaml)  │  Pipeline  │  Derivation │
 │  24 Types│  7 Phase │  12 Tools│  Pipeline │  Derivation  │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -21,9 +21,9 @@
 
 | 功能 | 说明 | 测试数 |
 |------|------|--------|
-| M2 类型 | 24 个元模型类型 | 8 |
-| 7 阶段 | 生命周期阶段管理 | 8 |
-| 12 工具 | 模型操作工具 | 8 |
+| M2类型 (见 project-registry.yaml) | 24 个元模型类型 | 8 |
+| 阶段 (见 project-registry.yaml) | 生命周期阶段管理 | 8 |
+| 工具 (见 project-registry.yaml) | 模型操作工具 | 8 |
 | Pipeline | 数据处理管线 | 4 |
 
 ---
@@ -42,7 +42,7 @@ model-driven derive     # 推导
 
 | 模块 | 测试文件 | 测试用例 |
 |------|----------|----------|
-| M2 类型 | 8 | ~60 |
+| M2类型 (见 project-registry.yaml) | 8 | ~60 |
 | 阶段 | 8 | ~60 |
 | 工具 | 8 | ~60 |
 | 管线 | 4 | ~30 |
