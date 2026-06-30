@@ -19,7 +19,8 @@ from model_driven.mof.m3_extended import (
 
 class TestLifecycleStage:
     def test_enum_values(self):
-        assert len(list(LifecycleStage)) == 7
+        # P60+ 第 8 阶段 (GOVERNANCE_MAINTENANCE) 已加入,共 8 个标准阶段
+        assert len(list(LifecycleStage)) == 8
         assert LifecycleStage.PLANNING.value == "planning"
         assert LifecycleStage.DESIGN.value == "design"
         assert LifecycleStage.DEVELOPMENT.value == "development"
@@ -42,7 +43,8 @@ class TestLifecycleStage:
 
 class TestStandardStages:
     def test_all_stages_defined(self):
-        assert len(STANDARD_STAGES) == 7
+        # P60+ 第 8 阶段 (GOVERNANCE_MAINTENANCE) 已加入,共 8 个标准阶段
+        assert len(STANDARD_STAGES) == 8
         for stage in LifecycleStage:
             assert stage in STANDARD_STAGES
 
