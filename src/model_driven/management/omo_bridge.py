@@ -203,11 +203,11 @@ class OMOBridge:
             return False
 
     def write_debt_to_file(self, debt: dict[str, Any]) -> bool:
-        """将债务写入 .omo/debt/ 目录"""
+        """将债务写入 .omo/debt/items/ 目录"""
         if not self._file_mode or not self._omo_dir:
             return False
 
-        debt_dir = self._omo_dir / "debt"
+        debt_dir = self._omo_dir / "debt" / "items"
         debt_dir.mkdir(parents=True, exist_ok=True)
 
         debt_id = debt.get("id", f"DEBT-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}")
