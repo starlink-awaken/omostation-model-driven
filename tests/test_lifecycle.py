@@ -40,8 +40,8 @@ class TestStageInstance:
 class TestLifecycleTracker:
     def test_initialization(self):
         tracker = LifecycleTracker(entity_id="proj-1")
-        # P60+ 第 8 阶段 (GOVERNANCE_MAINTENANCE) 已加入,共 8 个标准阶段
-        assert len(tracker.stages) == 8
+        # 7 个标准业务阶段 (P60 第 8 阶段 GOVERNANCE_MAINTENANCE 已撤销, P52 真治本)
+        assert len(tracker.stages) == 7
         for stage in LifecycleStage:
             assert stage in tracker.stages
             assert tracker.stages[stage].status == StageStatus.NOT_STARTED
@@ -73,8 +73,8 @@ class TestLifecycleTracker:
         tracker.complete_current()
         progress = tracker.get_progress()
         assert progress["completed_stages"] == 1
-        # P60+ 第 8 阶段 (GOVERNANCE_MAINTENANCE) 已加入,共 8 个标准阶段
-        assert progress["total_stages"] == 8
+        # 7 个标准业务阶段 (P60 第 8 阶段 GOVERNANCE_MAINTENANCE 已撤销, P52 真治本)
+        assert progress["total_stages"] == 7
 
     def test_transitions_history(self):
         tracker = LifecycleTracker(entity_id="proj-1")
