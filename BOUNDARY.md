@@ -37,3 +37,7 @@ model-driven 不直接注册 BOS URI 端点。它作为横切面框架被其他�
 - 项目源码：`projects/model-driven/`
 - 入口定义：`projects/model-driven/pyproject.toml` 或 `package.json`
 - 测试：`cd projects/model-driven && uv run pytest tests/ -q`
+
+## 架构演进与项目边界索引
+
+参见工作区架构演进与项目边界：[`../../docs/ARCHITECTURE-EVOLUTION.md`](../../docs/ARCHITECTURE-EVOLUTION.md)
