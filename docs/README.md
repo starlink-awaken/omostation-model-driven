@@ -1,14 +1,15 @@
 # model-driven Documentation
 
-> 生命周期与 Stage/Gate 横切框架
-> Lifecycle and Stage/Gate crosscutting framework.
+> M0 · 生命周期横切框架
+> Stack: Python
 
-This directory is the documentation home for **model-driven**. Detailed design documents live in the project root; use the index below to navigate.
+This directory collects project-level documentation for **model-driven**.
 
 ## Document Map
 
 - [`../README.md`](../README.md) — Project overview and quick start
-- [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — Architecture and design
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — Architecture overview
+- [`API.md`](API.md) — API / command-line / usage reference
 - [`../BOUNDARY.md`](../BOUNDARY.md) — Boundaries and interfaces
 - [`../CALLCHAIN.md`](../CALLCHAIN.md) — Call chains and interaction flows
 - [`../CAPABILITY-MAP.md`](../CAPABILITY-MAP.md) — Capability map
@@ -17,6 +18,7 @@ This directory is the documentation home for **model-driven**. Detailed design d
 - [`../CHANGELOG.md`](../CHANGELOG.md) — Change log
 - [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — Contribution guide
 - [`../SECURITY.md`](../SECURITY.md) — Security policy
+- [`../LICENSE`](../LICENSE) — MIT License
 
 ## Workspace Context
 
