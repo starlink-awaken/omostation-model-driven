@@ -52,7 +52,9 @@ def tool_design(
     return {"success": True, "node": node, "schema": schema}
 
 
-# ── 2. model-generate: 模型生成 ────────────────────
+# ── 2. model-generate: 模板投影 (ADR-0240 D4 降级) ────────────────────
+# 名义「codegen」实际为 YAML/JSON 模板投影, 非真代码生成管线.
+# 真 codegen 须单独立项 + 新 ADR.
 
 
 def tool_generate(
@@ -62,9 +64,9 @@ def tool_generate(
     target_format: str = "yaml",
     **kwargs,
 ) -> dict[str, Any]:
-    """从模型生成代码/配置
+    """从 M2 schema 投影草稿节点 (模板投影, 非真 codegen).
 
-    增强版 — 支持多种输出格式和 M1→System 正向生成。
+    ADR-0240 D4: 降级声明 — 输出 YAML/JSON 模板骨架, 不生成可执行代码.
     """
     schema = get_schema(m2_type)
     if schema is None:
@@ -89,10 +91,11 @@ def tool_generate(
                 prop: prop_def.get("description", "") for prop, prop_def in schema.optional_properties.items()
             },
             "template": template or {},
+            "projection_kind": "template_yaml_json",  # ADR-0240 D4
         }
         generated.append(node)
 
-    # 按目标格式生成
+    # 按目标格式投影 (非编译型 codegen)
     if target_format == "yaml":
         output = yaml.dump(generated, allow_unicode=True, default_flow_style=False)
     elif target_format == "json":
@@ -109,6 +112,9 @@ def tool_generate(
         "type": m2_type,
         "target_format": target_format,
         "output_preview": output[:500],
+        "projection_kind": "template_yaml_json",
+        "codegen": False,  # 明示: 非真代码生成
+        "note": "ADR-0240 D4: template projection only; real codegen requires new ADR",
     }
 
 
