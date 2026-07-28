@@ -12,6 +12,7 @@ model_driven.cli — CLI 入口
 
 from __future__ import annotations
 
+import os
 import sys
 
 
@@ -216,8 +217,23 @@ def cmd_mcp(args: list[str]) -> None:
 
 
 def main():
-    """主入口"""
-    print("⚠️ Model-Driven 独立 CLI 已弃用，请使用 cockpit 替代", file=sys.stderr)
+    """主入口
+
+    ADR-0240 D1: 独立 CLI 删除路径 — 默认拒绝执行，过渡期仅
+    MODEL_DRIVEN_CLI_LEGACY=1 可继续调用（测试/紧急逃生）。
+    """
+    print(
+        "⚠️ Model-Driven 独立 CLI 已弃用 (ADR-0240 D1)，请使用 cockpit 替代",
+        file=sys.stderr,
+    )
+    if os.environ.get("MODEL_DRIVEN_CLI_LEGACY") != "1":
+        print(
+            "拒绝执行: 未设置 MODEL_DRIVEN_CLI_LEGACY=1。"
+            "人类入口=cockpit；遗留脚本请迁移。",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+
     args = sys.argv[1:]
 
     if not args:

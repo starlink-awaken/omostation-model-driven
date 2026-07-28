@@ -14,9 +14,10 @@ from model_driven.cli import main
 
 class TestCLI:
     @pytest.fixture(autouse=True)
-    def _reset_sys_argv(self):
-        """保存并恢复 sys.argv"""
+    def _reset_sys_argv(self, monkeypatch):
+        """保存并恢复 sys.argv；ADR-0240 默认 CLI 硬拒绝，测试走 LEGACY=1"""
         original = sys.argv[:]
+        monkeypatch.setenv("MODEL_DRIVEN_CLI_LEGACY", "1")
         yield
         sys.argv = original
 
@@ -28,6 +29,16 @@ class TestCLI:
         except SystemExit:
             pass
         return capsys.readouterr().out
+
+    def test_default_rejected_without_legacy(self, capsys, monkeypatch):
+        """ADR-0240 D1: 无 LEGACY 时 exit 2"""
+        monkeypatch.delenv("MODEL_DRIVEN_CLI_LEGACY", raising=False)
+        sys.argv = ["model-driven"]
+        with pytest.raises(SystemExit) as ei:
+            main()
+        assert ei.value.code == 2
+        err = capsys.readouterr().err
+        assert "ADR-0240" in err or "弃用" in err
 
     def test_no_args(self, capsys):
         """测试无参数时的帮助信息"""
