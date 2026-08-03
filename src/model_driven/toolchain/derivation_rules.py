@@ -50,7 +50,9 @@ class DerivationRules:
     def results(self) -> list[DerivationResult]:
         return self._results
 
-    def execute_all(self, by_type: dict[str, list[dict[str, Any]]], context: dict[str, Any] | None = None) -> list[DerivationResult]:
+    def execute_all(
+        self, by_type: dict[str, list[dict[str, Any]]], context: dict[str, Any] | None = None
+    ) -> list[DerivationResult]:
         """执行所有 15 条推导规则"""
         self._results.clear()
         context = context or {}
@@ -86,10 +88,14 @@ class DerivationRules:
                 if status in ("aging", "deprecated"):
                     triggered = True
                     self._add_result(
-                        "DR-01", "组件使用的协议衰减 → 组件存在协议风险",
-                        True, "medium",
+                        "DR-01",
+                        "组件使用的协议衰减 → 组件存在协议风险",
+                        True,
+                        "medium",
                         f"组件 {comp.get('id')} 使用衰减协议 {proto_id} (status={status})",
-                        component=comp.get("id"), protocol=proto_id, protocol_status=status,
+                        component=comp.get("id"),
+                        protocol=proto_id,
+                        protocol_status=status,
                     )
         if not triggered:
             self._add_result("DR-01", "组件使用的协议衰减 → 组件存在协议风险", False)
@@ -107,9 +113,13 @@ class DerivationRules:
             if domain in tier_1_domains and entity.get("id") not in cost_entities:
                 triggered = True
                 self._add_result(
-                    "DR-02", "核心域无成本归因 → 价值盲区", True, "high",
+                    "DR-02",
+                    "核心域无成本归因 → 价值盲区",
+                    True,
+                    "high",
                     f"实体 {entity.get('id')} (domain={domain}) 无成本归因",
-                    entity=entity.get("id"), domain=domain,
+                    entity=entity.get("id"),
+                    domain=domain,
                 )
         if not triggered:
             self._add_result("DR-02", "核心域无成本归因 → 价值盲区", False)
@@ -125,9 +135,13 @@ class DerivationRules:
             if constraints and not validator:
                 triggered = True
                 self._add_result(
-                    "DR-03", "规范约束未关联校验器 → 空转约束", True, "medium",
+                    "DR-03",
+                    "规范约束未关联校验器 → 空转约束",
+                    True,
+                    "medium",
                     f"规范 {spec.get('id')} 有 {len(constraints)} 条约束但无校验器",
-                    spec=spec.get("id"), constraint_count=len(constraints),
+                    spec=spec.get("id"),
+                    constraint_count=len(constraints),
                 )
         if not triggered:
             self._add_result("DR-03", "规范约束未关联校验器 → 空转约束", False)
@@ -146,9 +160,13 @@ class DerivationRules:
                     if arch_updated > model_updated:
                         triggered = True
                         self._add_result(
-                            "DR-04", "架构演化但模型未更新 → 模型漂移", True, "high",
+                            "DR-04",
+                            "架构演化但模型未更新 → 模型漂移",
+                            True,
+                            "high",
                             f"架构 {arch.get('id')} 已更新 ({arch_updated}) 但模型 {model.get('id')} 未同步 ({model_updated})",
-                            architecture=arch.get("id"), model=model.get("id"),
+                            architecture=arch.get("id"),
+                            model=model.get("id"),
                         )
         if not triggered:
             self._add_result("DR-04", "架构演化但模型未更新 → 模型漂移", False)
@@ -166,9 +184,13 @@ class DerivationRules:
                 if dep in stopped_mechanisms:
                     triggered = True
                     self._add_result(
-                        "DR-05", "机制停止但依赖组件仍活跃 → 僵尸依赖", True, "medium",
+                        "DR-05",
+                        "机制停止但依赖组件仍活跃 → 僵尸依赖",
+                        True,
+                        "medium",
                         f"组件 {comp.get('id')} 依赖已停止的机制 {dep}",
-                        component=comp.get("id"), mechanism=dep,
+                        component=comp.get("id"),
+                        mechanism=dep,
                     )
         if not triggered:
             self._add_result("DR-05", "机制停止但依赖组件仍活跃 → 僵尸依赖", False)
@@ -181,9 +203,13 @@ class DerivationRules:
             blocks = cm.get("properties", {}).get("blocks", [])
             if blocks:
                 self._add_result(
-                    "DR-06", "被约束反向推导约束源", True, "low",
+                    "DR-06",
+                    "被约束反向推导约束源",
+                    True,
+                    "low",
                     f"约束管理 {cm.get('id')} 阻塞了 {len(blocks)} 个目标",
-                    source=cm.get("id"), blocked_targets=blocks,
+                    source=cm.get("id"),
+                    blocked_targets=blocks,
                 )
         if not constraint_mgmt:
             self._add_result("DR-06", "被约束反向推导约束源", False)
@@ -201,9 +227,13 @@ class DerivationRules:
             if len(referencers) > 0:
                 triggered = True
                 self._add_result(
-                    "DR-07", "SSOT 来源反向推导引用者", True, "low",
+                    "DR-07",
+                    "SSOT 来源反向推导引用者",
+                    True,
+                    "low",
                     f"源 {source} 被 {len(referencers)} 个实体引用",
-                    source=source, referenced_by=referencers,
+                    source=source,
+                    referenced_by=referencers,
                 )
         if not triggered:
             self._add_result("DR-07", "SSOT 来源反向推导引用者", False)
@@ -220,9 +250,13 @@ class DerivationRules:
                 if m1_count == 0:
                     triggered = True
                     self._add_result(
-                        "DR-08", "M1 节点缺失检测", True, "medium",
+                        "DR-08",
+                        "M1 节点缺失检测",
+                        True,
+                        "medium",
                         f"M2 类型 '{m2_type}' 有示例但无 M1 节点",
-                        m2_type=m2_type, coverage="missing",
+                        m2_type=m2_type,
+                        coverage="missing",
                     )
         if not triggered:
             self._add_result("DR-08", "M1 节点缺失检测", False)
@@ -238,9 +272,14 @@ class DerivationRules:
             if progress < expected_progress:
                 triggered = True
                 self._add_result(
-                    "DR-09", "OKR 进度滞后 → 规划态风险", True, "high",
+                    "DR-09",
+                    "OKR 进度滞后 → 规划态风险",
+                    True,
+                    "high",
                     f"OKR {okr.get('id')} 进度 {progress:.0%} < 期望 {expected_progress:.0%}",
-                    okr=okr.get("id"), progress=progress, expected=expected_progress,
+                    okr=okr.get("id"),
+                    progress=progress,
+                    expected=expected_progress,
                 )
         if not triggered:
             self._add_result("DR-09", "OKR 进度滞后 → 规划态风险", False)
@@ -255,8 +294,12 @@ class DerivationRules:
             if not related:
                 triggered = True
                 self._add_result(
-                    "DR-10", "ADR 未关联 Spec → 设计漂移风险", True, "medium",
-                    f"ADR {adr.get('id')} 未关联任何 Spec", adr=adr.get("id"),
+                    "DR-10",
+                    "ADR 未关联 Spec → 设计漂移风险",
+                    True,
+                    "medium",
+                    f"ADR {adr.get('id')} 未关联任何 Spec",
+                    adr=adr.get("id"),
                 )
         if not triggered:
             self._add_result("DR-10", "ADR 未关联 Spec → 设计漂移风险", False)
@@ -272,9 +315,14 @@ class DerivationRules:
             if coverage < threshold:
                 triggered = True
                 self._add_result(
-                    "DR-11", "测试覆盖率低于阈值 → 开发态风险", True, "high",
+                    "DR-11",
+                    "测试覆盖率低于阈值 → 开发态风险",
+                    True,
+                    "high",
                     f"模块 {mod.get('id')} 覆盖率 {coverage}% < {threshold}%",
-                    module=mod.get("id"), coverage=coverage, threshold=threshold,
+                    module=mod.get("id"),
+                    coverage=coverage,
+                    threshold=threshold,
                 )
         if not triggered:
             self._add_result("DR-11", "测试覆盖率低于阈值 → 开发态风险", False)
@@ -289,8 +337,12 @@ class DerivationRules:
             if not rollback:
                 triggered = True
                 self._add_result(
-                    "DR-12", "部署无回滚计划 → 部署态风险", True, "high",
-                    f"发布计划 {rp.get('id')} 无回滚计划", release_plan=rp.get("id"),
+                    "DR-12",
+                    "部署无回滚计划 → 部署态风险",
+                    True,
+                    "high",
+                    f"发布计划 {rp.get('id')} 无回滚计划",
+                    release_plan=rp.get("id"),
                 )
         if not triggered:
             self._add_result("DR-12", "部署无回滚计划 → 部署态风险", False)
@@ -305,8 +357,12 @@ class DerivationRules:
             if not runbook:
                 triggered = True
                 self._add_result(
-                    "DR-13", "告警规则无关联运行手册 → 运行态风险", True, "medium",
-                    f"告警规则 {ar.get('id')} 无关联运行手册", alert_rule=ar.get("id"),
+                    "DR-13",
+                    "告警规则无关联运行手册 → 运行态风险",
+                    True,
+                    "medium",
+                    f"告警规则 {ar.get('id')} 无关联运行手册",
+                    alert_rule=ar.get("id"),
                 )
         if not triggered:
             self._add_result("DR-13", "告警规则无关联运行手册 → 运行态风险", False)
@@ -322,8 +378,12 @@ class DerivationRules:
                 if not postmortem:
                     triggered = True
                     self._add_result(
-                        "DR-14", "事件未复盘 → 运维态风险", True, "medium",
-                        f"事件 {inc.get('id')} 已解决但未复盘", incident=inc.get("id"),
+                        "DR-14",
+                        "事件未复盘 → 运维态风险",
+                        True,
+                        "medium",
+                        f"事件 {inc.get('id')} 已解决但未复盘",
+                        incident=inc.get("id"),
                     )
         if not triggered:
             self._add_result("DR-14", "事件未复盘 → 运维态风险", False)
@@ -338,9 +398,13 @@ class DerivationRules:
             if bottlenecks:
                 triggered = True
                 self._add_result(
-                    "DR-15", "价值流存在瓶颈 → 运营态风险", True, "medium",
+                    "DR-15",
+                    "价值流存在瓶颈 → 运营态风险",
+                    True,
+                    "medium",
                     f"价值流 {vs.get('id')} 存在 {len(bottlenecks)} 个瓶颈",
-                    value_stream=vs.get("id"), bottleneck_count=len(bottlenecks),
+                    value_stream=vs.get("id"),
+                    bottleneck_count=len(bottlenecks),
                 )
         if not triggered:
             self._add_result("DR-15", "价值流存在瓶颈 → 运营态风险", False)

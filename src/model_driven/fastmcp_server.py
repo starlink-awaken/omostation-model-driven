@@ -24,11 +24,17 @@ _tools = _server.list_tools()
 def model_tools_list(category: str = "") -> str:
     """列出所有可用模型驱动工具，可按 category 过滤: lifecycle|spec|adr|okr|omo|collab|toolchain|ssot|trigger"""
     tools = _server.list_tools(category=category or None)
-    return _json.dumps([{
-        "name": t["name"],
-        "description": t["description"],
-        "category": t.get("category", ""),
-    } for t in tools], ensure_ascii=False)
+    return _json.dumps(
+        [
+            {
+                "name": t["name"],
+                "description": t["description"],
+                "category": t.get("category", ""),
+            }
+            for t in tools
+        ],
+        ensure_ascii=False,
+    )
 
 
 @mcp.tool()

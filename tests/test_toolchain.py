@@ -16,9 +16,15 @@ from model_driven.toolchain.tools import (
 class TestToolchainBus:
     def test_register_and_list(self):
         bus = ToolchainBus()
-        bus.register("test-tool", lambda: None, ToolDefinition(
-            name="test-tool", description="测试工具", category="test",
-        ))
+        bus.register(
+            "test-tool",
+            lambda: None,
+            ToolDefinition(
+                name="test-tool",
+                description="测试工具",
+                category="test",
+            ),
+        )
         tools = bus.list_tools()
         assert len(tools) == 1
         assert tools[0].name == "test-tool"
@@ -98,11 +104,15 @@ class TestDefaultBus:
 
 class TestToolDesign:
     def test_design_valid(self):
-        result = tool_design(m2_type="adr", name="测试ADR", properties={
-            "context": "测试背景",
-            "decision": "测试决策",
-            "consequences": "测试后果",
-        })
+        result = tool_design(
+            m2_type="adr",
+            name="测试ADR",
+            properties={
+                "context": "测试背景",
+                "decision": "测试决策",
+                "consequences": "测试后果",
+            },
+        )
         assert result["success"]
         assert result["node"]["is_valid"]
 

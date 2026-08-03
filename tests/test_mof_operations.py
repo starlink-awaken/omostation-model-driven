@@ -109,15 +109,17 @@ class TestMofModel:
 
     def test_classify_by_lifecycle_stage(self):
         model = {
-            "models": [{
-                "model": {
-                    "modules": [{"id": "MOD-1"}],
-                    "tests": [{"id": "TEST-1"}],
-                    "configs": [{"id": "CFG-1"}],
-                    "specs": [{"id": "SPEC-1"}],
-                    "services": [{"id": "SVC-1"}],
-                },
-            }],
+            "models": [
+                {
+                    "model": {
+                        "modules": [{"id": "MOD-1"}],
+                        "tests": [{"id": "TEST-1"}],
+                        "configs": [{"id": "CFG-1"}],
+                        "specs": [{"id": "SPEC-1"}],
+                        "services": [{"id": "SVC-1"}],
+                    },
+                }
+            ],
         }
         result = classify_by_lifecycle_stage(model)
         assert "MOD-1" in result["development"]

@@ -193,8 +193,8 @@ class TestTransitionEngine:
                 "type": "M2_Entity",
                 "history": ["creation_event"],
                 "updated_at": "now",
-                "value_link": "demo_goal"
-            }
+                "value_link": "demo_goal",
+            },
         }
         success, msg, gate_exec = engine.try_transition(tracker, LifecycleStage.DESIGN, context)
         assert success

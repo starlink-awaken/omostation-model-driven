@@ -63,6 +63,7 @@ class TestPipelineTracker:
 
     def test_complete_phase_after_stages(self):
         from model_driven.lifecycle.stages import StageStatus
+
         tracker = PipelineTracker(entity_id="proj-1")
         tracker.start_phase(PipelinePhase.COLD_START)
 
@@ -77,6 +78,7 @@ class TestPipelineTracker:
 
     def test_sequential_phases(self):
         from model_driven.lifecycle.stages import StageStatus
+
         tracker = PipelineTracker(entity_id="proj-1")
 
         # Phase 1: ColdStart
@@ -102,6 +104,7 @@ class TestPipelineTracker:
 
     def test_complete_phase_with_completed_at(self):
         from model_driven.lifecycle.stages import StageStatus
+
         tracker = PipelineTracker(entity_id="proj-1")
         tracker.start_phase(PipelinePhase.COLD_START)
 
@@ -115,6 +118,7 @@ class TestPipelineTracker:
 
     def test_advance_stage_in_phase(self):
         from model_driven.lifecycle.stages import StageStatus
+
         tracker = PipelineTracker(entity_id="proj-1")
         tracker.start_phase(PipelinePhase.COLD_START)
 

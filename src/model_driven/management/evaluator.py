@@ -16,7 +16,8 @@ class GovernanceEvaluator:
     - X3 (Value): checks for goal/value linkage
     - X4 (Consistency): checks for schema validity
     """
-    def __init__(self, omo_bridge: OMOBridge = None):
+
+    def __init__(self, omo_bridge: OMOBridge = None):  # type: ignore[reportArgumentType]
         self.results = []
         self.bridge = omo_bridge or OMOBridge()
 
@@ -42,16 +43,13 @@ class GovernanceEvaluator:
             "x2_freshness": x2_pass,
             "x3_value": x3_pass,
             "x4_consistency": x4_pass,
-            "score": score
+            "score": score,
         }
         self.results.append(result)
 
         # OMO Bridge Integration (Phase 4 Flywheel)
         self.bridge.record_audit(
-            action="evaluate_x1_x4",
-            entity_type=data.get("type", "unknown"),
-            entity_id=entity_id,
-            details=result
+            action="evaluate_x1_x4", entity_type=data.get("type", "unknown"), entity_id=entity_id, details=result
         )
 
         if score < 1.0:
@@ -69,7 +67,7 @@ class GovernanceEvaluator:
                 title=f"Entity {entity_id} fails X1-X4 compliance",
                 description=f"Failed checks: {', '.join(failed_checks)}. Score: {score}",
                 severity="high" if score <= 0.5 else "medium",
-                source="model-driven-evaluator"
+                source="model-driven-evaluator",
             )
 
         return result

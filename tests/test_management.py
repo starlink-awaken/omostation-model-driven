@@ -63,7 +63,7 @@ class TestSpecManager:
         manager.create("S-1", "测试")
         assert manager.link_adr("S-1", "ADR-1")
         spec = manager.get("S-1")
-        assert "ADR-1" in spec.related_adrs
+        assert "ADR-1" in spec.related_adrs  # type: ignore[reportOptionalMemberAccess]
 
     def test_stats(self):
         manager = SpecManager()
@@ -174,6 +174,7 @@ class TestOKRDecomposer:
 
     def test_decompose_empty_kr(self):
         from model_driven.management.okr import OKR, OKRDecomposer
+
         okr = OKR(id="O-1", objective="测试", key_results=[])
         decomposer = OKRDecomposer()
         result = decomposer.decompose(okr)
@@ -183,12 +184,20 @@ class TestOKRDecomposer:
         from model_driven.management.okr import OKR, OKRDecomposer
         from model_driven.mof.m3_extended import KeyResult
 
-        okr1 = OKR(id="O-1", objective="目标1", key_results=[
-            KeyResult(id="KR-1", description="开发功能", target_value=3, current_value=0),
-        ])
-        okr2 = OKR(id="O-2", objective="目标2", key_results=[
-            KeyResult(id="KR-2", description="设计接口", target_value=100, current_value=0),
-        ])
+        okr1 = OKR(
+            id="O-1",
+            objective="目标1",
+            key_results=[
+                KeyResult(id="KR-1", description="开发功能", target_value=3, current_value=0),
+            ],
+        )
+        okr2 = OKR(
+            id="O-2",
+            objective="目标2",
+            key_results=[
+                KeyResult(id="KR-2", description="设计接口", target_value=100, current_value=0),
+            ],
+        )
 
         decomposer = OKRDecomposer()
         result = decomposer.decompose_all([okr1, okr2])
@@ -200,9 +209,13 @@ class TestOKRDecomposer:
         from model_driven.management.okr import OKR, OKRDecomposer
         from model_driven.mof.m3_extended import KeyResult
 
-        okr = OKR(id="O-1", objective="测试", key_results=[
-            KeyResult(id="KR-1", description="开发功能", target_value=1, current_value=0),
-        ])
+        okr = OKR(
+            id="O-1",
+            objective="测试",
+            key_results=[
+                KeyResult(id="KR-1", description="开发功能", target_value=1, current_value=0),
+            ],
+        )
         decomposer = OKRDecomposer()
         decomposer.decompose(okr)
 
@@ -311,9 +324,9 @@ class TestPersistence:
         restored = SpecManager.load(state_dir=d)
         assert restored is not None
         assert len(restored.list_all()) == 2
-        assert restored.get("S-1").title == "往返测试1"
-        assert restored.get("S-2").title == "往返测试2"
-        assert restored.get("S-2").status == SpecStatus.APPROVED
+        assert restored.get("S-1").title == "往返测试1"  # type: ignore[reportOptionalMemberAccess]
+        assert restored.get("S-2").title == "往返测试2"  # type: ignore[reportOptionalMemberAccess]
+        assert restored.get("S-2").status == SpecStatus.APPROVED  # type: ignore[reportOptionalMemberAccess]
 
     def test_adr_manager_roundtrip(self, tmp_path):
         d = str(tmp_path)
@@ -326,8 +339,8 @@ class TestPersistence:
         restored = ADRManager.load(state_dir=d)
         assert restored is not None
         assert len(restored.list_all()) == 2
-        assert restored.get("ADR-1").title == "测试决策1"
-        assert restored.get("ADR-2").status == ADRStatus.ACCEPTED
+        assert restored.get("ADR-1").title == "测试决策1"  # type: ignore[reportOptionalMemberAccess]
+        assert restored.get("ADR-2").status == ADRStatus.ACCEPTED  # type: ignore[reportOptionalMemberAccess]
 
     def test_okr_manager_roundtrip(self, tmp_path):
         d = str(tmp_path)
@@ -341,9 +354,9 @@ class TestPersistence:
         assert restored is not None
         assert len(restored.list_all()) == 1
         o = restored.get("O-1")
-        assert o.objective == "季度目标"
-        assert len(o.key_results) == 1
-        assert o.key_results[0].id == "KR-1"
+        assert o.objective == "季度目标"  # type: ignore[reportOptionalMemberAccess]
+        assert len(o.key_results) == 1  # type: ignore[reportOptionalMemberAccess]
+        assert o.key_results[0].id == "KR-1"  # type: ignore[reportOptionalMemberAccess]
 
     def test_lifecycle_manager_roundtrip(self, tmp_path):
         d = str(tmp_path)
@@ -364,7 +377,7 @@ class TestPersistence:
         from model_driven.toolchain.bus import ToolchainBus
 
         bus = ToolchainBus()
-        bus.register("dummy", lambda **kw: {"ok": True}, None)
+        bus.register("dummy", lambda **kw: {"ok": True}, None)  # type: ignore[reportArgumentType]
 
         bus.save_history(state_dir=d)
 

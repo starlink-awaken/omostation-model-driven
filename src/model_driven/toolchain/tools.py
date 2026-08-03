@@ -216,15 +216,15 @@ def tool_derive(
 
     # 1. 传递推理: A→B, B→C ∴ A→C
     if include_transitive:
-        _derive_transitive(by_type, result)
+        _derive_transitive(by_type, result)  # type: ignore[reportArgumentType]
 
     # 2. 风险推理: 基于推导规则
     if include_risks:
-        _derive_risks(by_type, result)
+        _derive_risks(by_type, result)  # type: ignore[reportArgumentType]
 
     # 3. 缺口发现: 检测 M2 类型覆盖
     if include_gaps:
-        _derive_gaps(by_type, result)
+        _derive_gaps(by_type, result)  # type: ignore[reportArgumentType]
 
     # 4. 推导规则执行 (来自 derivation_engine)
     from model_driven.toolchain.derivation_engine import DerivationEngine
@@ -250,7 +250,10 @@ def tool_derive(
         ],
         "derivation_summary": derivation_summary,
         "models_analyzed": len(models),
-        "total_findings": len(result["risks"]) + len(result["gaps"]) + len(result["transitive_chains"]) + derivation_summary["triggered"],
+        "total_findings": len(result["risks"])
+        + len(result["gaps"])
+        + len(result["transitive_chains"])
+        + derivation_summary["triggered"],
     }
 
 
@@ -474,9 +477,7 @@ def _detect_single_drift(model: dict[str, Any], snapshot: dict[str, Any], result
             )
 
 
-def _detect_batch_drift(
-    models: list[dict[str, Any]], snapshots: list[dict[str, Any]], result: dict[str, Any]
-) -> None:
+def _detect_batch_drift(models: list[dict[str, Any]], snapshots: list[dict[str, Any]], result: dict[str, Any]) -> None:
     """批量模型 vs 批量快照的漂移检测"""
     snapshot_by_id = {s.get("id"): s for s in snapshots}
     for m in models:
@@ -563,7 +564,9 @@ def tool_monitor(
         stage = m.get("stage", "unknown")
         health["by_stage"][stage] = health["by_stage"].get(stage, 0) + 1
 
-    health["health_score"] = MAX_HEALTH_SCORE if not health["issues"] else max(0, 100 - len(health["issues"]) * HEALTH_ISSUE_PENALTY)
+    health["health_score"] = (
+        MAX_HEALTH_SCORE if not health["issues"] else max(0, 100 - len(health["issues"]) * HEALTH_ISSUE_PENALTY)
+    )
 
     return {"success": True, "health": health}
 

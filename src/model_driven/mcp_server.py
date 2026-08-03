@@ -20,7 +20,7 @@ class MCPTool:
     name: str
     description: str
     category: str = ""
-    handler: callable | None = None
+    handler: callable | None = None  # type: ignore[reportGeneralTypeIssues]
 
 
 class MCPServer:
@@ -134,7 +134,7 @@ class MCPServer:
         self._register_tool("trigger-dashboard", "Trigger 统一仪表板", "trigger", self._handle_trigger_dashboard)
         self._register_tool("trigger-drift", "检测 Trigger M1↔M0 漂移", "trigger", self._handle_trigger_drift)
 
-    def _register_tool(self, name: str, description: str, category: str, handler: callable) -> None:
+    def _register_tool(self, name: str, description: str, category: str, handler: callable) -> None:  # type: ignore[reportGeneralTypeIssues]
         self._tools[name] = MCPTool(name=name, description=description, category=category, handler=handler)
 
     def list_tools(self, category: str | None = None) -> list[dict[str, Any]]:
@@ -161,7 +161,7 @@ class MCPServer:
             return tool.handler(**kwargs)
         except (TypeError, ValueError) as e:
             return {"success": False, "error": str(e)}
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             return {"success": False, "error": str(e)}
 
     # ── Handlers ──

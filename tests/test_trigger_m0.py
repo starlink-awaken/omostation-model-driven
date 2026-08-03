@@ -37,23 +37,23 @@ class TestTriggerM0Manager:
         m0 = TriggerM0Manager()
         for _ in range(5):
             snap = m0.record_execution("t-1", success=True)
-        assert snap.status == "healthy"
-        assert snap.health_score == 100.0  # capped at 100
+        assert snap.status == "healthy"  # type: ignore[reportPossiblyUnboundVariable]
+        assert snap.health_score == 100.0  # capped at 100  # type: ignore[reportPossiblyUnboundVariable]
 
     def test_record_execution_failures_degrade(self):
         m0 = TriggerM0Manager()
         m0.record_execution("t-1", success=True)  # healthy
         for _ in range(3):
             snap = m0.record_execution("t-1", success=False)
-        assert snap.status == "degraded"
-        assert snap.health_score <= 60.0  # 100 - 3*20 = 40
+        assert snap.status == "degraded"  # type: ignore[reportPossiblyUnboundVariable]
+        assert snap.health_score <= 60.0  # 100 - 3*20 = 40  # type: ignore[reportPossiblyUnboundVariable]
 
     def test_record_execution_five_failures_stopped(self):
         m0 = TriggerM0Manager()
         m0.record_execution("t-1", success=True)  # healthy
         for _ in range(5):
             snap = m0.record_execution("t-1", success=False)
-        assert snap.status == "stopped"
+        assert snap.status == "stopped"  # type: ignore[reportPossiblyUnboundVariable]
 
     def test_recovery_after_failures(self):
         m0 = TriggerM0Manager()
@@ -63,10 +63,11 @@ class TestTriggerM0Manager:
         # 恢复: 需要连续 3 次成功才能变回 healthy (status 变为 degraded 后需 3 次)
         for _ in range(3):
             snap = m0.record_execution("t-1", success=True)
-        assert snap.status == "healthy"
+        assert snap.status == "healthy"  # type: ignore[reportPossiblyUnboundVariable]
 
     def test_load_nonexistent(self):
         import tempfile
+
         d = tempfile.mkdtemp()
         m0 = TriggerM0Manager(state_dir=d)
         assert not m0.load()
@@ -100,6 +101,7 @@ class TestTriggerM0Manager:
 
     def test_load_nonexistent_v2(self):
         import tempfile
+
         d = tempfile.mkdtemp()
         m0 = TriggerM0Manager(state_dir=d)
         assert not m0.load()

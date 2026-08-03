@@ -77,14 +77,17 @@ class TestValueSSOT:
 class TestProcessSSOT:
     def test_define_and_record(self):
         ssot = ProcessSSOT()
-        ssot.define_process("PROC-1", {
-            "name": "测试流程",
-            "steps": [
-                {"id": "step-1", "name": "步骤1"},
-                {"id": "step-2", "name": "步骤2"},
-                {"id": "step-3", "name": "步骤3"},
-            ],
-        })
+        ssot.define_process(
+            "PROC-1",
+            {
+                "name": "测试流程",
+                "steps": [
+                    {"id": "step-1", "name": "步骤1"},
+                    {"id": "step-2", "name": "步骤2"},
+                    {"id": "step-3", "name": "步骤3"},
+                ],
+            },
+        )
         ssot.record_step_execution("PROC-1", "step-1", "completed")
         ssot.record_step_execution("PROC-1", "step-2", "completed")
 
@@ -97,22 +100,26 @@ class TestCrossStageConsistencyChecker:
     def test_check_no_issues(self):
         checker = CrossStageConsistencyChecker()
         planning = [{"id": "OKR-1", "type": "okr"}]
-        design = [{
-            "id": "SPEC-1",
-            "type": "spec_design",
-            "properties": {"related_okrs": ["OKR-1"]},
-        }]
+        design = [
+            {
+                "id": "SPEC-1",
+                "type": "spec_design",
+                "properties": {"related_okrs": ["OKR-1"]},
+            }
+        ]
         result = checker.check(planning, design, [], [], [])
         assert result["passed"]
 
     def test_check_missing_okr_link(self):
         checker = CrossStageConsistencyChecker()
         planning = [{"id": "OKR-1", "type": "okr"}]
-        design = [{
-            "id": "SPEC-1",
-            "type": "spec_design",
-            "properties": {},
-        }]
+        design = [
+            {
+                "id": "SPEC-1",
+                "type": "spec_design",
+                "properties": {},
+            }
+        ]
         result = checker.check(planning, design, [], [], [])
         assert not result["passed"]
         assert result["total_issues"] >= 1

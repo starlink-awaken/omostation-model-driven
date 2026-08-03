@@ -101,8 +101,13 @@ class OKR:
             "id": self.id,
             "objective": self.objective,
             "key_results": [
-                {"id": kr.id, "description": kr.description, "weight": kr.weight,
-                 "target_value": kr.target_value, "current_value": kr.current_value}
+                {
+                    "id": kr.id,
+                    "description": kr.description,
+                    "weight": kr.weight,
+                    "target_value": kr.target_value,
+                    "current_value": kr.current_value,
+                }
                 for kr in self.key_results
             ],
             "status": self.status.value,
@@ -152,7 +157,7 @@ class OKRManager:
             stats[okr.status.value] += 1
             total_progress += okr.progress
         stats["total"] = len(self._okrs)
-        stats["avg_progress"] = round(total_progress / max(len(self._okrs), 1) * 100, 1)
+        stats["avg_progress"] = round(total_progress / max(len(self._okrs), 1) * 100, 1)  # type: ignore[reportArgumentType]
         return stats
 
     def get_overdue(self) -> list[OKR]:
@@ -169,7 +174,16 @@ class OKRManager:
                 oid: {
                     "id": o.id,
                     "objective": o.objective,
-                    "key_results": [{"id": kr.id, "description": kr.description, "weight": kr.weight, "target_value": kr.target_value, "current_value": kr.current_value} for kr in o.key_results],
+                    "key_results": [
+                        {
+                            "id": kr.id,
+                            "description": kr.description,
+                            "weight": kr.weight,
+                            "target_value": kr.target_value,
+                            "current_value": kr.current_value,
+                        }
+                        for kr in o.key_results
+                    ],
                     "status": o.status.value,
                     "owner": o.owner,
                     "deadline": o.deadline,
@@ -374,12 +388,8 @@ class OKRDecomposer:
             phase, phase_name = self._infer_phase_from_kr(kr.description)
             priority = self._infer_priority_from_weight(kr.weight)
 
-            phases.append(
-                self._create_phase_entry(i, okr.id, kr, phase, phase_name, priority, default_owner)
-            )
-            tasks.extend(
-                self._create_task_entries(i, okr.id, kr, priority, default_owner)
-            )
+            phases.append(self._create_phase_entry(i, okr.id, kr, phase, phase_name, priority, default_owner))
+            tasks.extend(self._create_task_entries(i, okr.id, kr, priority, default_owner))
 
         result = {
             "success": True,

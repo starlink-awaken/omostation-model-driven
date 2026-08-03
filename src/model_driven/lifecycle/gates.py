@@ -54,9 +54,9 @@ class GateEngine:
 
     def __init__(self, gates: list[Gate] | None = None):
         self._gates = gates or list(STANDARD_GATES)
-        self._custom_checks: dict[str, callable] = {}
+        self._custom_checks: dict[str, callable] = {}  # type: ignore[reportGeneralTypeIssues]
 
-    def register_check(self, check_type: str, check_fn: callable) -> None:
+    def register_check(self, check_type: str, check_fn: callable) -> None:  # type: ignore[reportGeneralTypeIssues]
         """注册自定义检查函数"""
         self._custom_checks[check_type] = check_fn
 
@@ -120,7 +120,7 @@ class GateEngine:
                 return CheckResult(name=check_name, check_type=check_type, passed=passed, message=message)
             except (TypeError, ValueError) as e:
                 return CheckResult(name=check_name, check_type=check_type, passed=False, message=str(e))
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 return CheckResult(name=check_name, check_type=check_type, passed=False, message=str(e))
 
         # 2. 内置检查类型

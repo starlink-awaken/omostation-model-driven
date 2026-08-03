@@ -228,8 +228,7 @@ def main():
     )
     if os.environ.get("MODEL_DRIVEN_CLI_LEGACY") != "1":
         print(
-            "拒绝执行: 未设置 MODEL_DRIVEN_CLI_LEGACY=1。"
-            "人类入口=cockpit；遗留脚本请迁移。",
+            "拒绝执行: 未设置 MODEL_DRIVEN_CLI_LEGACY=1。人类入口=cockpit；遗留脚本请迁移。",
             file=sys.stderr,
         )
         raise SystemExit(2)
@@ -290,7 +289,7 @@ def cmd_evaluate(args: list[str]) -> None:
         "type": "M2_Entity",
         "history": ["creation_event"],
         "updated_at": "now",
-        "value_link": "demo_goal"
+        "value_link": "demo_goal",
     }
 
     result = evaluator.evaluate_entity(entity_id, data)
@@ -299,7 +298,7 @@ def cmd_evaluate(args: list[str]) -> None:
     print(f"  X2 (保鲜): {'✅' if result['x2_freshness'] else '❌'}")
     print(f"  X3 (价值): {'✅' if result['x3_value'] else '❌'}")
     print(f"  X4 (一致): {'✅' if result['x4_consistency'] else '❌'}")
-    print(f"  总分: {result['score']*100:.1f}%")
+    print(f"  总分: {result['score'] * 100:.1f}%")
 
     print("\n审计日志和可能的 OMO 债务已注册到 .omo 目录。")
 

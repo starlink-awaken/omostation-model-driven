@@ -27,6 +27,7 @@ class LLMGatewayProvider:
     通过 HTTP 调用 llm-gateway 服务的 Provider
     默认地址: http://localhost:9290/v1/generate
     """
+
     def __init__(self, endpoint: str = "http://localhost:9290/v1/generate"):
         self.endpoint = endpoint
 
@@ -38,14 +39,14 @@ class LLMGatewayProvider:
             f"Output a JSON object with 'passed' (boolean), 'score' (float 0.0 to 1.0), and 'reason' (string)."
         )
 
-        req = urllib.request.Request( # noqa: S310
+        req = urllib.request.Request(  # noqa: S310
             self.endpoint,
             data=json.dumps({"prompt": prompt}).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=10) as response: # noqa: S310
+            with urllib.request.urlopen(req, timeout=10) as response:  # noqa: S310
                 body = response.read().decode("utf-8")
                 res = json.loads(body)
                 content = res.get("content", "{}")
@@ -57,7 +58,7 @@ class LLMGatewayProvider:
                     # Fallback parsing
                     passed = "true" in content_clean.lower()
                     return {"passed": passed, "score": 1.0 if passed else 0.0, "reason": content_clean}
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             # Service unavailable or network error
             return {"error": str(e)}
 
@@ -92,7 +93,7 @@ class HybridJudge:
                     passed=passed,
                     score=score,
                     reason=reason,
-                    metrics={"semantic_score": score, "provider": "llm-gateway"}
+                    metrics={"semantic_score": score, "provider": "llm-gateway"},
                 )
 
         # Fallback 到本地启发式规则

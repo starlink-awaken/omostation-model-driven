@@ -106,10 +106,7 @@ class TestSchemaValidation:
     def test_all_schemas_have_terminal_state(self):
         terminal_states = ["archived", "discarded", "rejected"]
         for name, schema in ALL_M2_SCHEMAS.items():
-            has_terminal = any(
-                ts in schema.state_machine
-                for ts in terminal_states
-            )
+            has_terminal = any(ts in schema.state_machine for ts in terminal_states)
             assert has_terminal, f"{name}: no terminal state found"
 
     def test_okr_schema(self):

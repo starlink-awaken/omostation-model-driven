@@ -187,7 +187,7 @@ class TriggerRegistry:
                 return {"error": f"Trigger not found: {trigger_id}"}
             return {
                 "trigger": info.to_dict(),
-                "m0_snapshot": self._m0_manager.get_snapshot(trigger_id).to_dict()
+                "m0_snapshot": self._m0_manager.get_snapshot(trigger_id).to_dict()  # type: ignore[reportOptionalMemberAccess]
                 if self._m0_manager.get_snapshot(trigger_id)
                 else None,
             }
