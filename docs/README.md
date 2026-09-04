@@ -1,3 +1,10 @@
+---
+type: derived
+source: projects/model-driven
+owner: governance-team
+last_updated: 2026-09-03
+---
+
 # model-driven Documentation
 
 > M0 · 生命周期横切框架
