@@ -1,3 +1,9 @@
+---
+type: ssot
+owner: governance-team
+last_updated: 2026-09-03
+---
+
 # model-driven API / Usage Reference
 
 > Quick reference for using **model-driven** programmatically and from the command line.

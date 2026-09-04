@@ -1,3 +1,9 @@
+---
+type: ssot
+owner: governance-team
+last_updated: 2026-09-03
+---
+
 # Model-Driven 能力地图
 
 > 全生命周期模型驱动平台 · M2类型 (见 project-registry.yaml) · 阶段 (见 project-registry.yaml) · 工具 (见 project-registry.yaml)

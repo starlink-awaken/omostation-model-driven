@@ -1,3 +1,9 @@
+---
+type: ssot
+owner: governance-team
+last_updated: 2026-09-03
+---
+
 # model-driven — Architecture
 
 > **Layer**: M0 横切框架  
