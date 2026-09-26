@@ -25,10 +25,10 @@ class JudgeResult:
 class LLMGatewayProvider:
     """
     通过 HTTP 调用 llm-gateway 服务的 Provider
-    默认地址: http://localhost:9290/v1/generate
+    默认地址: http://127.0.0.1:4000/v1/chat/completions
     """
 
-    def __init__(self, endpoint: str = "http://localhost:9290/v1/generate"):
+    def __init__(self, endpoint: str = "http://127.0.0.1:4000/v1/chat/completions"):
         self.endpoint = endpoint
 
     def evaluate(self, text: str, criteria: str) -> dict[str, Any]:
@@ -41,7 +41,7 @@ class LLMGatewayProvider:
 
         req = urllib.request.Request(  # noqa: S310
             self.endpoint,
-            data=json.dumps({"prompt": prompt}).encode("utf-8"),
+            data=json.dumps({"model": "fast", "messages": [{"role": "user", "content": prompt}]}).encode("utf-8"),
             headers={"Content-Type": "application/json"},
         )
 
