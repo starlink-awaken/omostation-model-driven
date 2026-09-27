@@ -6,6 +6,9 @@ model_driven.management.hybrid_judge — 混合裁判模型 (Phase 4 Evaluation 
 """
 
 import json
+import os
+import re
+import subprocess
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -20,6 +23,26 @@ class JudgeResult:
     score: float
     reason: str
     metrics: dict[str, Any]
+
+
+_NO_PROXY = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+
+def _gateway_auth() -> dict[str, str]:
+    """门面对 /v1/* 一律要求 Bearer。env → macOS Keychain(aetherforge-gateway)。"""
+    key = os.environ.get("LLM_GATEWAY_KEY") or os.environ.get("AETHERFORGE_API_KEY") or ""
+    if not key:
+        try:
+            out = subprocess.run(
+                ["security", "find-generic-password", "-s", "aetherforge-gateway", "-w"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            key = out.stdout.strip() if out.returncode == 0 else ""
+        except (OSError, subprocess.TimeoutExpired):
+            key = ""
+    return {"Authorization": f"Bearer {key}"} if key else {}
 
 
 class LLMGatewayProvider:
@@ -42,16 +65,19 @@ class LLMGatewayProvider:
         req = urllib.request.Request(  # noqa: S310
             self.endpoint,
             data=json.dumps({"model": "fast", "messages": [{"role": "user", "content": prompt}]}).encode("utf-8"),
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", **_gateway_auth()},
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=10) as response:  # noqa: S310
+            # 本机门面: 绕过系统代理; 快档冷加载可达数十秒
+            with _NO_PROXY.open(req, timeout=180) as response:
                 body = response.read().decode("utf-8")
                 res = json.loads(body)
-                content = res.get("content", "{}")
+                # OpenAI chat 响应; 旧代码读 res["content"](退役的 /v1/generate 协议), 恒为空
+                content = ((res.get("choices") or [{}])[0].get("message") or {}).get("content") or "{}"
                 # Attempt to parse LLM JSON output (may be wrapped in markdown code blocks)
-                content_clean = content.strip().strip("```json").strip("```").strip()
+                match = re.search(r"\{.*\}", content, re.DOTALL)
+                content_clean = match.group(0) if match else content.strip()
                 try:
                     return json.loads(content_clean)
                 except json.JSONDecodeError:
